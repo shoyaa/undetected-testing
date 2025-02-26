@@ -6,7 +6,7 @@ with SB(uc=True, test=True) as sb:
     sb.uc_gui_click_captcha()
     sb.sleep(2)
     sb.uc_gui_handle_captcha()
-    print("Success! Website did not detect SeleniumBase!!!")
+    print("Success! Website did not detect SeleniumBase!")
     selector = "body"
     try:
         text_content = sb.get_text(selector)
