@@ -1,7 +1,5 @@
 name: CI build
 on:
-  schedule:
-    - cron: "14 * * * *"
   push:
     branches: [ master ]
   pull_request:
