@@ -79,5 +79,5 @@ jobs:
     #    python test_user_agent.py
     - name: Run python raw_uc_mode.py --debug
       run: |
-        python test.py --debug
+        python pixelscanr.py --debug
 
