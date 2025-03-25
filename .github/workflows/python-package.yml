@@ -1,5 +1,7 @@
-name: CI build
+name: CI build 4
 on:
+  schedule:
+    - cron: "38 * * * *"
   push:
     branches: [ master ]
   pull_request:
@@ -16,8 +18,8 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.12"]
+        os: [ubuntu-22.04]
+        python-version: ["3.13"]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -27,6 +29,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Set Locale
+      if: runner.os == 'Linux'
       run: |
         sudo apt-get install tzdata locales -y && sudo locale-gen en_US.UTF-8
         sudo localectl set-locale LANG="en_US.UTF-8"
@@ -43,6 +46,9 @@ jobs:
         pip install --upgrade wheel
         pip install -r requirements.txt
         pip install --upgrade pyautogui
+    - name: Install extra dependencies
+      if: runner.os == 'Linux'
+      run: |
         pip install --upgrade python-xlib
     - name: Lint with flake8
       run: |
@@ -50,7 +56,7 @@ jobs:
         # Stop the build if there are flake8 issues
         flake8 . --count --show-source --statistics --exclude=temp
     - name: Install Chrome
-      if: matrix.os == 'ubuntu-20.04'
+      if: matrix.os == 'ubuntu-22.04'
       run: |
         sudo apt install google-chrome-stable
     - name: Check the console scripts interface
@@ -74,10 +80,10 @@ jobs:
       run: |
         python -c "from seleniumbase.core import detect_b_ver; print(detect_b_ver.get_binary_location('google-chrome'))"
         python -c "from seleniumbase import undetected; print(undetected.find_chrome_executable())"
-    #- name: Run python test_user_agent.py
-    #  run: |
-    #    python test_user_agent.py
-    - name: Run python raw_uc_mode.py --debug
+    - name: Make sure pytest with sb is working
       run: |
-        python pixelscanr.py --debug
-
+        echo "def test_0(sb): pass" > verify_sb.py
+        pytest verify_sb.py
+    - name: Run python pixelscanr.py
+      run: |
+        python pixelscanr.py 
