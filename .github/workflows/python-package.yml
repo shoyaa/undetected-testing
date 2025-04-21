@@ -1,7 +1,5 @@
 name: CI build 4
 on:
-  schedule:
-    - cron: "38 * * * *"
   push:
     branches: [ master ]
   pull_request:
